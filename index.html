@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background-color: bisque;">
+    <form action="/api/blogs" method="POST">
+        <textarea name="blog" id="" cols="30" rows="10"></textarea>
+        <label for="username">username</label>
+           <input type="text" name="username"> <br>
+          <label for="password">password</label>
+          <input type="password" class="form-control" name="password" id="" placeholder="">
+        <button type="submit">add</button>
+    </form>
+
+    <form action="/api/users" method="POST">
+    <h1>for reGister</h1>
+        <label for="username">username</label>
+           <input type="text" name="username"> <br>
+          <label for="password">password</label>
+          <input type="password" class="form-control" name="password" id="" placeholder="">
+            <button type="submit" >login</button>
+    </form>
+</body>
+</html>
