@@ -26,5 +26,5 @@ app.use('/api/login', loginRouter)
 
 
 app.listen(PORT, () => {
-    console.log(`app is running at ${PORT}`)
+    console.log(`app is running at PORT ${PORT}`)
 })

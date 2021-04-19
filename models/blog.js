@@ -15,6 +15,13 @@ const blogSchema = mongoose.Schema({
     date: Date,
     title: String,
     author: String,
+    likes: Number,
+    likerUsers: [
+      {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'

@@ -41,7 +41,8 @@ blogsRouter.post('/', async (req,res) => {
             title: body.title || 'unnamed',
             author: body.author || 'unnamed',
             date: new Date().toISOString(),
-            user: user.id
+            user: user.id,
+            likes:0
         });
          let savedBlog = await newBlog.save();
          console.log(savedBlog)
@@ -54,14 +55,60 @@ blogsRouter.post('/', async (req,res) => {
     }
 })
 
-blogsRouter.delete('/:id', async (req,res) => {
-  console.log(req.params)
+blogsRouter.delete('/:id/:token', async (req,res) => {
+  let id = req.params.id
+  let token = req.params.token
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+ 
+
   try{
-   let deleteBlog= await Blog.findByIdAndDelete(req.params.id)
-    res.send(deleteBlog)
+  await Blog.findByIdAndDelete(id)
+    let user = await User.findById(decodedToken.id)
+     user.blogs = await user.blogs.filter(filt=> filt !=id)
+       await user.save()
+
+   res.send({message: 'deleted'})
   }catch(err){
     console.log({message:err.message})
   }
+})
+
+blogsRouter.put('/:id', async (req,res) => {
+  let token = req.body.token
+  let id = req.params.id
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  
+  try{
+    let oneBlog = await Blog.findById(id)
+    if(oneBlog.likerUsers.includes(decodedToken.id)){
+      return res.send({name:'kakee'})
+    }
+  oneBlog.likerUsers=await oneBlog.likerUsers.concat(decodedToken.id)
+  oneBlog.save()
+ let liked = await Blog.findByIdAndUpdate(id,{likes: req.body.like+1}, {new:true})
+ res.send(liked)
+}catch(err){
+  res.status(404).end(console.log({message:err.message}))
+}
+})
+
+blogsRouter.put('/:id/:unlike', async (req,res) => {
+  let token = req.body.token
+  let id = req.params.id
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  
+  try{
+    let oneBlog = await Blog.findById(id)
+    if(!oneBlog.likerUsers.includes(decodedToken.id)){
+      return res.send({name:'kakee'})
+    }
+  oneBlog.likerUsers=await oneBlog.likerUsers.filter(filt=> filt !=decodedToken.id)
+  oneBlog.save()
+ let liked = await Blog.findByIdAndUpdate(id,{likes: req.body.like-1}, {new:true})
+ res.send(liked)
+}catch(err){
+  res.status(404).end(console.log({message:err.message}))
+}
 })
 
 
