@@ -12,7 +12,7 @@ blogsRouter.get('/', async (req,res) => {
         }catch(err){
             res.json({message:err.message});
         }
-})
+});
 
 
 const getTokenFrom = request => {
@@ -51,65 +51,65 @@ blogsRouter.post('/', async (req,res) => {
         res.json(savedBlog);
     }catch(err){
       
-        res.send(404).end(console.log({message: err.message}))
+        res.send(404).end(console.log({message: err.message}));
     }
 })
 
 blogsRouter.delete('/:id/:token', async (req,res) => {
-  let id = req.params.id
-  let token = req.params.token
+  let id = req.params.id;
+  let token = req.params.token;
   const decodedToken = jwt.verify(token, process.env.SECRET);
  
 
   try{
-  await Blog.findByIdAndDelete(id)
-    let user = await User.findById(decodedToken.id)
-     user.blogs = await user.blogs.filter(filt=> filt !=id)
-       await user.save()
+  await Blog.findByIdAndDelete(id);
+    let user = await User.findById(decodedToken.id);
+     user.blogs = await user.blogs.filter(filt=> filt !=id);
+       await user.save();
 
-   res.send({message: 'deleted'})
+   res.send({message: 'deleted'});
   }catch(err){
-    console.log({message:err.message})
+    console.log({message:err.message});
   }
-})
+});
 
 blogsRouter.put('/:id', async (req,res) => {
-  let token = req.body.token
-  let id = req.params.id
+  let token = req.body.token;
+  let id = req.params.id;
   const decodedToken = jwt.verify(token, process.env.SECRET);
   
   try{
-    let oneBlog = await Blog.findById(id)
+    let oneBlog = await Blog.findById(id);
     if(oneBlog.likerUsers.includes(decodedToken.id)){
-      return res.send({name:'kakee'})
+      return res.send({name:'kakee'});
     }
-  oneBlog.likerUsers=await oneBlog.likerUsers.concat(decodedToken.id)
-  oneBlog.save()
- let liked = await Blog.findByIdAndUpdate(id,{likes: req.body.like+1}, {new:true})
- res.send(liked)
+  oneBlog.likerUsers=await oneBlog.likerUsers.concat(decodedToken.id);
+  oneBlog.save();
+ let liked = await Blog.findByIdAndUpdate(id,{likes: req.body.like+1}, {new:true});
+ res.send(liked);
 }catch(err){
-  res.status(404).end(console.log({message:err.message}))
+  res.status(404).end(console.log({message:err.message}));
 }
 })
 
 blogsRouter.put('/:id/:unlike', async (req,res) => {
-  let token = req.body.token
-  let id = req.params.id
+  let token = req.body.token;
+  let id = req.params.id;
   const decodedToken = jwt.verify(token, process.env.SECRET);
   
   try{
-    let oneBlog = await Blog.findById(id)
+    let oneBlog = await Blog.findById(id);
     if(!oneBlog.likerUsers.includes(decodedToken.id)){
-      return res.send({name:'kakee'})
-    }
-  oneBlog.likerUsers=await oneBlog.likerUsers.filter(filt=> filt !=decodedToken.id)
-  oneBlog.save()
- let liked = await Blog.findByIdAndUpdate(id,{likes: req.body.like-1}, {new:true})
- res.send(liked)
+      return res.send({name:'kakee'});
+    };
+  oneBlog.likerUsers=await oneBlog.likerUsers.filter(filt=> filt !=decodedToken.id);
+  oneBlog.save();
+ let liked = await Blog.findByIdAndUpdate(id,{likes: req.body.like-1}, {new:true});
+ res.send(liked);
 }catch(err){
-  res.status(404).end(console.log({message:err.message}))
-}
-})
+  res.status(404).end(console.log({message:err.message}));
+};
+});
 
 
 
